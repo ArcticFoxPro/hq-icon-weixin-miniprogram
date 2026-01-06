@@ -1,0 +1,121 @@
+<!-- Title / Search Bar -->
+<view class="top-bar">
+  <t-navbar title="HQ ICON" placeholder="{{true}}" fixed="{{true}}" />
+  <t-search model:value="{{term}}" bind:submit="onSearch" bind:clear="onClear">
+    <view slot="action" class="filter-btn" bind:tap="showFilter">
+      <t-icon name="setting" size="52rpx" />
+    </view>
+  </t-search>
+</view>
+
+<view class="container">
+  <!-- Results -->
+  <view class="result-wrap">
+    <view class="loading-box" wx:if="{{loading}}">
+      <t-loading theme="circular" size="40rpx" loading="{{loading}}" text="搜索中..." />
+    </view>
+
+    <view wx:elif="{{results.length === 0 && hasSearched}}" class="empty-wrap">
+      <t-icon name="info-circle" size="48rpx" color="#999" />
+      <text>未找到结果</text>
+    </view>
+
+    <t-grid column="{{2}}" gutter="{{16}}" wx:else class="result-grid">
+      <t-grid-item wx:for="{{results}}" wx:key="trackId" class="result-item">
+        <view class="card" bind:tap="onItemClick" data-item="{{item}}">
+          <view class="icon-box">
+            <t-image src="{{item.processedImage || item.displayImage}}" width="{{iconSize}}rpx" height="{{iconSize}}rpx"
+              lazy-load />
+          </view>
+          <view class="card-info">
+            <view class="card-title">{{item.trackName}}</view>
+            <view class="card-desc">{{item.artistName}}</view>
+          </view>
+        </view>
+      </t-grid-item>
+    </t-grid>
+  </view>
+
+  <!-- Filter Popup -->
+  <t-popup visible="{{filterVisible}}" bind:visible-change="onFilterVisibleChange" placement="bottom">
+    <view class="filter-popup">
+      <view class="filter-header">
+        <text class="filter-title">设置</text>
+        <view class="filter-close">
+          <t-button size="small" variant="text" bind:tap="closeFilter">关闭</t-button>
+        </view>
+      </view>
+      <scroll-view scroll-y class="filter-content">
+        <view class="group-header">
+          <text class="group-title">国家地区</text>
+          <view class="expand-btn" bind:tap="toggleCountryExpand">
+            <text>{{isCountryExpanded ? '收起' : '展开'}}</text>
+            <t-icon name="{{isCountryExpanded ? 'chevron-up' : 'chevron-down'}}" size="32rpx" />
+          </view>
+        </view>
+        <view class="country-collapse-container {{isCountryExpanded ? 'expanded' : ''}}" style="{{countryHeight ? 'height:' + countryHeight + 'px' : ''}}">
+          <t-cell-group>
+            <view class="options-grid col-4" id="country-grid">
+              <view wx:for="{{COUNTRY_MAPS}}" wx:key="value"
+                class="filter-option {{country === item.value ? 'active' : ''}}" bind:tap="onOptionChange"
+                data-key="country" data-value="{{item.value}}">
+                {{item.text}}
+              </view>
+            </view>
+          </t-cell-group>
+        </view>
+
+        <t-cell-group title="平台">
+          <view class="options-grid col-3">
+            <view wx:for="{{ENTITY_MAPS}}" wx:key="value"
+              class="filter-option {{entity === item.value ? 'active' : ''}}" bind:tap="onOptionChange"
+              data-key="entity" data-value="{{item.value}}">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="查询数量">
+          <view class="options-grid col-4">
+            <view wx:for="{{LIMIT_MAPS}}" wx:key="value" class="filter-option {{limit === item.value ? 'active' : ''}}"
+              bind:tap="onOptionChange" data-key="limit" data-value="{{item.value}}">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="图像尺寸">
+          <view class="options-grid col-3">
+            <view wx:for="{{RESOLUTION_MAPS}}" wx:key="value"
+              class="filter-option {{resolution === item.value ? 'active' : ''}}" bind:tap="onOptionChange"
+              data-key="resolution" data-value="{{item.value}}">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="裁切方式">
+          <view class="options-grid col-2">
+            <view wx:for="{{CUT_MAPS}}" wx:key="value" class="filter-option {{cut === item.value ? 'active' : ''}}"
+              bind:tap="onOptionChange" data-key="cut" data-value="{{item.value}}">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="图像格式">
+          <view class="options-grid col-3">
+            <view wx:for="{{FORMAT_MAPS}}" wx:key="value"
+              class="filter-option {{format === item.value ? 'active' : ''}}" bind:tap="onOptionChange"
+              data-key="format" data-value="{{item.value}}">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+      </scroll-view>
+    </view>
+  </t-popup>
+
+  <t-toast id="t-toast" />
+</view>

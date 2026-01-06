@@ -1,0 +1,13 @@
+{
+  "darkmode": true,
+  "pages": [
+    "pages/hq-icon/index"
+  ],
+  "themeLocation": "theme.json",
+  "window": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "@navTxtStyle"
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
