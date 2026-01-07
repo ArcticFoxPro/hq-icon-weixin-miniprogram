@@ -118,5 +118,21 @@
     </view>
   </t-popup>
 
+  <t-popup visible="{{previewVisible}}" placement="center">
+    <view class="preview-popup">
+      <view class="preview-header">
+        <view class="preview-title">查看原图</view>
+        <view class="preview-close">
+          <t-button size="small" variant="text" bind:tap="closePreview">关闭</t-button>
+        </view>
+      </view>
+      <scroll-view scroll-y class="preview-content">
+        <view class="checkerboard">
+          <image src="{{previewImageUrl}}" mode="widthFix" class="preview-image" />
+        </view>
+      </scroll-view>
+    </view>
+  </t-popup>
+
   <t-toast id="t-toast" />
 </view>
