@@ -238,7 +238,7 @@ Page({
         // Preview
         previewVisible: false,
         previewImageUrl: '',
-        isDesktop: false,
+        isMobile: false,
     },
 
     onLoad() {
@@ -251,10 +251,9 @@ Page({
             }
         });
 
-        const sys = wx.getSystemInfoSync ? wx.getSystemInfoSync() : {};
-        const platform = sys.platform || '';
-        const isDesktop = platform === 'windows' || platform === 'mac';
-        this.setData({ isDesktop });
+        const platform = wx.getDeviceInfo().platform;
+        const isMobile = platform === 'ios' || platform === 'android' || platform === 'ohos';
+        this.setData({ isMobile });
 
         if (Object.keys(savedSettings).length > 0) {
             this.setData(savedSettings, () => {
@@ -497,7 +496,7 @@ Page({
                 } else if (res.tapIndex === 2) {
                     this.addImageToFavorites(item);
                 } else if (res.tapIndex === 3) {
-                    if (this.data.isDesktop) {
+                    if (!this.data.isMobile) {
                         wx.previewImage({
                             current: item.displayImage,
                             urls: [item.displayImage]
