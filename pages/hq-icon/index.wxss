@@ -39,10 +39,14 @@
   flex-direction: column;
 }
 
-/* center loading within result area */
 .loading-box {
   min-height: 50vh;
 }
+
+.t-grid {
+  background-color: var(--td-bg-color-page) !important;
+}
+
 .t-grid-item__content {
   --td-grid-item-padding: 0rpx;
   padding: 0rpx !important;
