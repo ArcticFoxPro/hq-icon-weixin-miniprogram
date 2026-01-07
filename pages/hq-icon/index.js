@@ -1,4 +1,4 @@
-import { searchApp } from '../../utils/itunes';
+import { searchApp, getTopApps } from '../../utils/itunes';
 import Toast from 'tdesign-miniprogram/toast/index';
 
 const ENTITY_MAPS = [{
@@ -209,6 +209,7 @@ Page({
         searchPlaceholder: '搜索应用...',
         results: [],
         loading: false,
+        loadingText: '搜索中...',
         hasSearched: false,
         filterVisible: false,
 
@@ -235,11 +236,14 @@ Page({
         iconRadius: 72,
     },
 
+    onLoad() {
+        this.loadTopApps();
+    },
+
     showFilter() {
         this.setData({
             filterVisible: true
         }, () => {
-            // Measure heights after render
             setTimeout(() => {
                 this.measureCountryHeights();
             }, 100);
@@ -260,17 +264,13 @@ Page({
             const lastItem = itemRects[itemRects.length - 1];
             const eighthItem = itemRects[7];
 
-            // Calculate padding bottom based on the last item
             const paddingBottom = gridRect.bottom - lastItem.bottom;
-            
-            // Collapsed height: Top of grid to bottom of 8th item + padding
+
             const collapsedHeight = (eighthItem.bottom - gridRect.top) + paddingBottom;
             const expandedHeight = gridRect.height;
 
             this.setData({
-                collapsedHeight,
-                expandedHeight,
-                countryHeight: this.data.isCountryExpanded ? expandedHeight : collapsedHeight
+                collapsedHeight, expandedHeight, countryHeight: this.data.isCountryExpanded ? expandedHeight : collapsedHeight
             });
         });
     },
@@ -290,7 +290,7 @@ Page({
     toggleCountryExpand() {
         const isExpanded = !this.data.isCountryExpanded;
         const { collapsedHeight, expandedHeight } = this.data;
-        
+
         this.setData({
             isCountryExpanded: isExpanded,
             countryHeight: isExpanded ? expandedHeight : collapsedHeight
@@ -318,8 +318,55 @@ Page({
                 } else if (processKeys.includes(key) && this.data.rawResults) {
                     this.processResults(this.data.rawResults);
                 }
+            } else {
+                if ((key === 'country' || key === 'entity') && !this.data.term) {
+                    this.loadTopApps();
+                } else if (['resolution', 'format', 'cut'].includes(key) && this.data.rawResults) {
+                    this.processResults(this.data.rawResults);
+                }
             }
         });
+    },
+
+    async loadTopApps() {
+        const {
+            country,
+            limit,
+            entity
+        } = this.data;
+
+        if (entity !== 'software') {
+            this.setData({
+                results: []
+            });
+            this.data.rawResults = [];
+            return;
+        }
+
+        this.setData({
+            loading: true,
+            loadingText: '载入热门应用中...'
+        });
+
+        try {
+            const data = await getTopApps(country, limit);
+            if (data && data.results) {
+                this.data.rawResults = data.results;
+                this.processResults(data.results);
+            }
+        } catch (err) {
+            console.error(err);
+            Toast({
+                context: this,
+                selector: '#t-toast',
+                message: '加载失败',
+                theme: 'error'
+            });
+        } finally {
+            this.setData({
+                loading: false
+            });
+        }
     },
 
     async onSearch() {
@@ -335,13 +382,14 @@ Page({
 
         this.setData({
             loading: true,
+            loadingText: '搜索应用中...',
             hasSearched: true,
             results: []
         });
 
         try {
             const data = await searchApp(term, country, entity, limit);
-            this.data.rawResults = data.results; // Store raw data
+            this.data.rawResults = data.results;
             this.processResults(data.results);
         } catch (err) {
             console.error(err);
@@ -364,6 +412,8 @@ Page({
             term: '',
             results: [],
             hasSearched: false
+        }, () => {
+            this.loadTopApps();
         });
     },
 
