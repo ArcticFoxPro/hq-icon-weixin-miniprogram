@@ -237,7 +237,22 @@ Page({
     },
 
     onLoad() {
-        this.loadTopApps();
+        const settings = ['entity', 'country', 'limit', 'resolution', 'cut', 'format'];
+        const savedSettings = {};
+        settings.forEach(key => {
+            const value = wx.getStorageSync(key);
+            if (value) {
+                savedSettings[key] = value;
+            }
+        });
+
+        if (Object.keys(savedSettings).length > 0) {
+            this.setData(savedSettings, () => {
+                this.loadTopApps();
+            });
+        } else {
+            this.loadTopApps();
+        }
     },
 
     showFilter() {
@@ -305,6 +320,8 @@ Page({
         } = e.currentTarget.dataset;
 
         if (this.data[key] === value) return;
+
+        wx.setStorageSync(key, value);
 
         this.setData({
             [key]: value
