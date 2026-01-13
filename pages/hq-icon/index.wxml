@@ -16,8 +16,7 @@
         </view>
 
         <view class="empty-wrap" wx:elif="{{results.length === 0 && hasSearched}}">
-            <t-icon color="#999" name="info-circle" size="48rpx"/>
-            <text>未找到结果</text>
+            <t-result theme="default" title="未找到结果" description="请检查搜索词与搜索配置是否正确" />
         </view>
 
         <t-grid class="result-grid" column="{{2}}" gutter="{{16}}" wx:else>
@@ -132,8 +131,7 @@
             </scroll-view>
         </view>
     </t-popup>
-
-    <t-toast id="t-toast"/>
 </view>
 
+<t-toast id="t-toast"/>
 <t-action-sheet id="t-action-sheet" bind:close="onActionSheetClose" bind:selected="onActionSheetSelect"/>

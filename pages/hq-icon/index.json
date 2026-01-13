@@ -12,6 +12,7 @@
     "t-loading": "tdesign-miniprogram/loading/loading",
     "t-navbar": "tdesign-miniprogram/navbar/navbar",
     "t-popup": "tdesign-miniprogram/popup/popup",
+    "t-result": "tdesign-miniprogram/result/result",
     "t-search": "tdesign-miniprogram/search/search",
     "t-toast": "tdesign-miniprogram/toast/toast"
   }

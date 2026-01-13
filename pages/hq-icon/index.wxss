@@ -1,7 +1,10 @@
+page {
+  background-color: var(--td-bg-color-page);
+}
+
 .container {
   background-color: var(--td-bg-color-page);
   padding-bottom: env(safe-area-inset-bottom);
-  min-height: 100vh;
   box-sizing: border-box;
 }
 
