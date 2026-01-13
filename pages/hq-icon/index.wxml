@@ -16,7 +16,7 @@
         </view>
 
         <view class="empty-wrap" wx:elif="{{results.length === 0 && hasSearched}}">
-            <t-result theme="default" title="未找到结果" description="请检查搜索词与搜索配置是否正确" />
+            <t-result description="请检查搜索词与搜索配置是否正确" theme="default" title="未找到结果"/>
         </view>
 
         <t-grid class="result-grid" column="{{2}}" gutter="{{16}}" wx:else>
@@ -41,7 +41,7 @@
             <view class="filter-header">
                 <text class="filter-title">设置</text>
                 <view class="filter-close">
-                    <t-button bind:tap="closeFilter" size="small" variant="text">关闭</t-button>
+                    <t-button bind:tap="closeFilter" icon="close" shape="square" size="medium" variant="text"/>
                 </view>
             </view>
             <scroll-view class="filter-content" scroll-y>
@@ -134,4 +134,4 @@
 </view>
 
 <t-toast id="t-toast"/>
-<t-action-sheet id="t-action-sheet" bind:close="onActionSheetClose" bind:selected="onActionSheetSelect"/>
+<t-action-sheet bind:close="onActionSheetClose" bind:selected="onActionSheetSelect" id="t-action-sheet"/>

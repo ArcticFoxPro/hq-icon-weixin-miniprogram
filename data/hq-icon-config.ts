@@ -91,7 +91,7 @@ export const CUT_MAPS = [{
 export const actionSheetItems = [{
     label: '保存', icon: 'download'
 }, {
-    label: '分享', icon: 'share'
+    label: '分享', icon: 'share-1'
 }, {
     label: '收藏', icon: 'star'
 }, {
