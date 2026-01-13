@@ -96,9 +96,9 @@
 
                 <t-cell-group title="裁切方式">
                     <view class="options-grid col-2">
-                        <view bind:tap="onOptionChange" class="filter-option {{cut === item.value ? 'active' : ''}}"
-                              data-key="cut" data-value="{{item.value}}" wx:for="{{CUT_MAPS}}" wx:key="value">
-                            {{item.text}}
+                        <view wx:for="{{CUT_MAPS}}" wx:key="value" class="filter-option {{cut === item.value ? 'active' : ''}} {{entity === 'desktopSoftware' && item.value !== '0' ? 'disabled' : ''}}"
+                            bind:tap="onOptionChange" data-key="cut" data-value="{{item.value}}" data-disabled="{{entity === 'desktopSoftware' && item.value !== '0'}}">
+                                {{item.text}}
                         </view>
                     </view>
                 </t-cell-group>
