@@ -136,3 +136,8 @@ dist
 .pnp.*
 /miniprogram_npm
 package-lock.json
+
+# Weixin MiniProgram Private Config
+/project.private.config.json
+
+/.idea/

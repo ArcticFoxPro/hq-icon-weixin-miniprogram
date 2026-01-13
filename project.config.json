@@ -45,7 +45,6 @@
   },
   "compileType": "miniprogram",
   "libVersion": "3.13.1",
-  "appid": "wx3bcf7ea9efb7c34c",
   "projectname": "hq-icon",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
