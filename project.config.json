@@ -5,6 +5,9 @@
     "include": []
   },
   "setting": {
+    "useCompilerPlugins": [
+      "typescript"
+    ],
     "urlCheck": false,
     "scopeDataCheck": false,
     "coverView": true,
@@ -40,8 +43,7 @@
     "condition": false,
     "swc": false,
     "disableSWC": true,
-    "disableUseStrict": false,
-    "useCompilerPlugins": false
+    "disableUseStrict": false
   },
   "compileType": "miniprogram",
   "libVersion": "3.13.1",

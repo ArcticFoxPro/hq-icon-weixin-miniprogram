@@ -11,6 +11,10 @@ Get app icons from App Store / 从 App Store 上获取应用图标
     ```
     https://itunes.apple.com; https://rss.marketingtools.apple.com;
     ```
+    将以下域名导入微信小程序 DownloadFile 合法域名：
+    ```
+    https://is1-ssl.mzstatic.com;
+    ```
 5. 下载[微信小程序开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)，登录后点击“小程序”-“导入”，填入上一步取得的 `AppID`，将项目目录选中后导入。
 6. 在项目根目录下，打开终端并安装 npm 依赖包：
     ```Shell
