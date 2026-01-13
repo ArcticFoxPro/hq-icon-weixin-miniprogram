@@ -9,6 +9,9 @@
     "lib": ["ES2024"],
     "types": ["miniprogram-api-typings"]
   },
+  "paths": {
+    "tdesign-miniprogram/*":["./miniprogram/miniprogram_npm/tdesign-miniprogram/*"]
+  },
   "include": [
     "./**/*.ts"
   ],

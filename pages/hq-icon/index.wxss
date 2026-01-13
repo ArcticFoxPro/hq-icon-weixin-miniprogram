@@ -43,13 +43,13 @@
   min-height: 50vh;
 }
 
-.t-grid {
+.result-grid .t-grid {
   background-color: var(--td-bg-color-page) !important;
 }
 
-.t-grid-item__content {
+.result-grid .t-grid-item__content {
   --td-grid-item-padding: 0rpx;
-  padding: 0rpx !important;
+  padding: 0 !important;
 }
 
 .result-item {

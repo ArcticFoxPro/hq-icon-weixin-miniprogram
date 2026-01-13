@@ -1,6 +1,15 @@
 import {getTopApps, searchApp} from '../../utils/itunes';
-import {Toast} from 'tdesign-miniprogram';
-import {COUNTRY_MAPS, CUT_MAPS, ENTITY_MAPS, FORMAT_MAPS, LIMIT_MAPS, RESOLUTION_MAPS} from "../../data/hq-icon-config";
+import {ActionSheet, Toast} from 'tdesign-miniprogram';
+import {ActionSheetTheme} from 'tdesign-miniprogram/action-sheet/index';
+import {
+    actionSheetItems,
+    COUNTRY_MAPS,
+    CUT_MAPS,
+    ENTITY_MAPS,
+    FORMAT_MAPS,
+    LIMIT_MAPS,
+    RESOLUTION_MAPS
+} from "../../data/hq-icon-config";
 
 Page({
     data: {
@@ -38,6 +47,8 @@ Page({
         previewVisible: false,
         previewImageUrl: '',
         isMobile: false,
+
+        currentItem: null,
     },
 
     onLoad() {
@@ -259,30 +270,51 @@ Page({
     },
 
     onItemClick(e) {
-        const {
-            item
-        } = e.currentTarget.dataset;
-        wx.showActionSheet({
-            itemList: ['保存到相册', '分享到聊天', '添加到收藏', '查看原图'], success: (res) => {
-                if (res.tapIndex === 0) {
-                    this.downloadImage(item);
-                } else if (res.tapIndex === 1) {
-                    this.shareImageAsFile(item);
-                } else if (res.tapIndex === 2) {
-                    this.addImageToFavorites(item);
-                } else if (res.tapIndex === 3) {
-                    if (!this.data.isMobile) {
-                        wx.previewImage({
-                            current: item.displayImage, urls: [item.displayImage]
-                        });
-                    } else {
-                        this.setData({
-                            previewVisible: true, previewImageUrl: item.displayImage
-                        });
-                    }
-                }
-            }
+        const {item} = e.currentTarget.dataset;
+        this.setData({
+            currentItem: item
         });
+        ActionSheet.show({
+            theme: ActionSheetTheme.Grid,
+            selector: '#t-action-sheet',
+            context: this,
+            items: actionSheetItems,
+            description: item.trackName,
+        });
+    },
+
+    onActionSheetClose() {
+        this.setData({
+            currentItem: null
+        });
+    },
+
+    onActionSheetSelect(e) {
+        const {index} = e.detail;
+        const {currentItem} = this.data;
+
+        if (!currentItem) return;
+
+        this.onActionSheetClose();
+
+        switch (index) {
+            case 0: // 保存到相册
+                this.downloadImage(currentItem);
+                break;
+            case 1: // 分享到聊天
+                this.shareImageAsFile(currentItem);
+                break;
+            case 2: // 添加到收藏
+                this.addImageToFavorites(currentItem);
+                break;
+            case 3: // 查看原图
+                if (!this.data.isMobile) wx.previewImage({
+                    current: currentItem.displayImage, urls: [currentItem.displayImage]
+                }); else this.setData({
+                    previewVisible: true, previewImageUrl: currentItem.displayImage
+                });
+                break;
+        }
     },
 
     closePreview() {

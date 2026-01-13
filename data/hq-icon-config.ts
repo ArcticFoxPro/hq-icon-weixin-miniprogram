@@ -87,3 +87,13 @@ export const CUT_MAPS = [{
 }, {
     key: 'cut', value: '0', text: '原始图像'
 },];
+
+export const actionSheetItems = [{
+    label: '保存', icon: 'download'
+}, {
+    label: '分享', icon: 'share'
+}, {
+    label: '收藏', icon: 'star'
+}, {
+    label: '查看原图', icon: 'image-search'
+}]
