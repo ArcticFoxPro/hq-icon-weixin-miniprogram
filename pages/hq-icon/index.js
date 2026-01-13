@@ -257,7 +257,19 @@ Page({
 
         if (Object.keys(savedSettings).length > 0) {
             this.setData(savedSettings, () => {
-                this.loadTopApps();
+                const ent = this.data.entity;
+                let cut = '1';
+                if (ent === 'desktopSoftware') {
+                    cut = '0';
+                } else {
+                    const k = `cut_${ent}`;
+                    const s = wx.getStorageSync(k);
+                    cut = s || this.data.cut || '1';
+                }
+                wx.setStorageSync('cut', cut);
+                this.setData({ cut }, () => {
+                    this.loadTopApps();
+                });
             });
         } else {
             this.loadTopApps();
@@ -325,16 +337,43 @@ Page({
     onOptionChange(e) {
         const {
             key,
-            value
+            value,
+            disabled
         } = e.currentTarget.dataset;
 
         if (this.data[key] === value) return;
 
-        wx.setStorageSync(key, value);
+        if (key === 'cut' && (disabled || (this.data.entity === 'desktopSoftware' && value !== '0'))) {
+            Toast({
+                context: this,
+                selector: '#t-toast',
+                message: 'macOS 仅支持原始图像',
+                theme: 'warning'
+            });
+            return;
+        }
 
-        this.setData({
-            [key]: value
-        }, () => {
+        const updates = { [key]: value };
+        if (key === 'entity') {
+            if (value === 'desktopSoftware') {
+                updates.cut = '0';
+                wx.setStorageSync('cut_desktopSoftware', '0');
+            } else {
+                const cutKey = `cut_${value}`;
+                const saved = wx.getStorageSync(cutKey);
+                updates.cut = saved || '1';
+            }
+            wx.setStorageSync('cut', updates.cut);
+        } else if (key === 'cut') {
+            const ent = this.data.entity;
+            const cutKey = `cut_${ent}`;
+            wx.setStorageSync(cutKey, value);
+            wx.setStorageSync('cut', value);
+        }
+
+        Object.keys(updates).forEach(k => wx.setStorageSync(k, updates[k]));
+
+        this.setData(updates, () => {
             if (this.data.hasSearched) {
                 const searchKeys = ['country', 'entity', 'limit'];
                 const processKeys = ['resolution', 'format', 'cut'];

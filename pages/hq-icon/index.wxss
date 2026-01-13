@@ -143,6 +143,12 @@
   font-weight: 600;
 }
 
+.filter-option.disabled {
+  opacity: 0.5;
+  color: var(--td-text-color-disabled, #bbb);
+  border-color: var(--td-border-level-1-color);
+}
+
 .options-grid {
   display: flex;
   flex-wrap: wrap;
