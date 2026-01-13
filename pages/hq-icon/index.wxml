@@ -1,136 +1,138 @@
 <!-- Title / Search Bar -->
 <view class="top-bar">
-    <t-navbar fixed="{{true}}" placeholder="{{true}}" title="HQ ICON"/>
-    <t-search bind:clear="onClear" bind:submit="onSearch" model:value="{{term}}" placeholder="搜索">
-        <view bind:tap="showFilter" class="filter-btn" slot="action">
-            <t-icon name="setting" size="52rpx"/>
-        </view>
-    </t-search>
+  <t-navbar fixed="{{true}}" placeholder="{{true}}" title="HQ ICON"/>
+  <t-search bind:clear="onClear" bind:submit="onSearch" model:value="{{term}}" placeholder="搜索">
+    <view bind:tap="showFilter" class="filter-btn" slot="action">
+      <t-icon name="setting" size="52rpx"/>
+    </view>
+  </t-search>
 </view>
 
 <view class="container">
-    <!-- Results -->
-    <view class="result-wrap">
-        <view class="loading-box" wx:if="{{loading}}">
-            <t-loading loading="{{loading}}" size="40rpx" text="{{loadingText}}" theme="circular"/>
-        </view>
-
-        <view class="empty-wrap" wx:elif="{{results.length === 0 && hasSearched}}">
-            <t-result description="请检查搜索词与搜索配置是否正确" theme="default" title="未找到结果"/>
-        </view>
-
-        <t-grid class="result-grid" column="{{2}}" gutter="{{16}}" wx:else>
-            <t-grid-item class="result-item" wx:for="{{results}}" wx:key="trackId">
-                <view bind:tap="onItemClick" class="card" data-item="{{item}}">
-                    <view class="icon-box">
-                        <t-image height="{{iconSize}}rpx" lazy-load src="{{item.processedImage || item.displayImage}}"
-                                 width="{{iconSize}}rpx"/>
-                    </view>
-                    <view class="card-info">
-                        <view class="card-title">{{item.trackName}}</view>
-                        <view class="card-desc">{{item.artistName}}</view>
-                    </view>
-                </view>
-            </t-grid-item>
-        </t-grid>
+  <!-- Results -->
+  <view class="result-wrap">
+    <view class="loading-box" wx:if="{{loading}}">
+      <t-loading loading="{{loading}}" size="40rpx" text="{{loadingText}}" theme="circular"/>
     </view>
 
-    <!-- Filter Popup -->
-    <t-popup bind:visible-change="onFilterVisibleChange" placement="bottom" visible="{{filterVisible}}">
-        <view class="filter-popup">
-            <view class="filter-header">
-                <text class="filter-title">设置</text>
-                <view class="filter-close">
-                    <t-button bind:tap="closeFilter" icon="close" shape="square" size="medium" variant="text"/>
-                </view>
-            </view>
-            <scroll-view class="filter-content" scroll-y>
-                <view class="group-header">
-                    <text class="group-title">国家地区</text>
-                    <view bind:tap="toggleCountryExpand" class="expand-btn">
-                        <text>{{isCountryExpanded ? '收起' : '展开'}}</text>
-                        <t-icon name="{{isCountryExpanded ? 'chevron-up' : 'chevron-down'}}" size="32rpx"/>
-                    </view>
-                </view>
-                <view class="country-collapse-container {{isCountryExpanded ? 'expanded' : ''}}"
-                      style="{{countryHeight ? 'height:' + countryHeight + 'px' : ''}}">
-                    <t-cell-group>
-                        <view class="options-grid col-4" id="country-grid">
-                            <view bind:tap="onOptionChange"
-                                  class="filter-option {{country === item.value ? 'active' : ''}}" data-key="country"
-                                  data-value="{{item.value}}" wx:for="{{COUNTRY_MAPS}}" wx:key="value">
-                                {{item.text}}
-                            </view>
-                        </view>
-                    </t-cell-group>
-                </view>
+    <view class="empty-wrap" wx:elif="{{results.length === 0 && hasSearched}}">
+      <t-result description="请检查搜索词与搜索配置是否正确" theme="default" title="未找到结果"/>
+    </view>
 
-                <t-cell-group title="目标平台">
-                    <view class="options-grid col-3">
-                        <view bind:tap="onOptionChange" class="filter-option {{entity === item.value ? 'active' : ''}}"
-                              data-key="entity" data-value="{{item.value}}"
-                              wx:for="{{ENTITY_MAPS}}" wx:key="value">
-                            {{item.text}}
-                        </view>
-                    </view>
-                </t-cell-group>
-
-                <t-cell-group title="查询数量">
-                    <view class="options-grid col-4">
-                        <view bind:tap="onOptionChange" class="filter-option {{limit === item.value ? 'active' : ''}}"
-                              data-key="limit"
-                              data-value="{{item.value}}" wx:for="{{LIMIT_MAPS}}" wx:key="value">
-                            {{item.text}}
-                        </view>
-                    </view>
-                </t-cell-group>
-
-                <t-cell-group title="图像尺寸">
-                    <view class="options-grid col-3">
-                        <view bind:tap="onOptionChange"
-                              class="filter-option {{resolution === item.value ? 'active' : ''}}" data-key="resolution"
-                              data-value="{{item.value}}" wx:for="{{RESOLUTION_MAPS}}"
-                              wx:key="value">{{item.text}}</view>
-                    </view>
-                </t-cell-group>
-
-                <t-cell-group title="裁切方式">
-                    <view class="options-grid col-2">
-                        <view wx:for="{{CUT_MAPS}}" wx:key="value" class="filter-option {{cut === item.value ? 'active' : ''}} {{entity === 'desktopSoftware' && item.value !== '0' ? 'disabled' : ''}}"
-                            bind:tap="onOptionChange" data-key="cut" data-value="{{item.value}}" data-disabled="{{entity === 'desktopSoftware' && item.value !== '0'}}">
-                                {{item.text}}
-                        </view>
-                    </view>
-                </t-cell-group>
-
-                <t-cell-group title="图像格式">
-                    <view class="options-grid col-3">
-                        <view bind:tap="onOptionChange" class="filter-option {{format === item.value ? 'active' : ''}}"
-                              data-key="format" data-value="{{item.value}}" wx:for="{{FORMAT_MAPS}}" wx:key="value">
-                            {{item.text}}
-                        </view>
-                    </view>
-                </t-cell-group>
-
-            </scroll-view>
+    <t-grid class="result-grid" column="{{2}}" gutter="{{16}}" wx:else>
+      <t-grid-item class="result-item" wx:for="{{results}}" wx:key="trackId">
+        <view bind:tap="onItemClick" class="card" data-item="{{item}}">
+          <view class="icon-box">
+            <t-image height="{{iconSize}}rpx" lazy-load src="{{item.processedImage || item.displayImage}}"
+                     width="{{iconSize}}rpx"/>
+          </view>
+          <view class="card-info">
+            <view class="card-title">{{item.trackName}}</view>
+            <view class="card-desc">{{item.artistName}}</view>
+          </view>
         </view>
-    </t-popup>
+      </t-grid-item>
+    </t-grid>
+  </view>
 
-    <t-popup placement="center" visible="{{previewVisible}}">
-        <view class="preview-popup">
-            <view class="preview-header">
-                <view class="preview-title">查看原图</view>
-                <view class="preview-close">
-                    <t-button bind:tap="closePreview" size="small" variant="text">关闭</t-button>
-                </view>
-            </view>
-            <scroll-view class="preview-content" scroll-y>
-                <view class="checkerboard">
-                    <image class="preview-image" mode="widthFix" src="{{previewImageUrl}}"/>
-                </view>
-            </scroll-view>
+  <!-- Filter Popup -->
+  <t-popup bind:visible-change="onFilterVisibleChange" placement="bottom" visible="{{filterVisible}}">
+    <view class="filter-popup">
+      <view class="filter-header">
+        <text class="filter-title">设置</text>
+        <view class="filter-close">
+          <t-button bind:tap="closeFilter" icon="close" shape="square" size="medium" variant="text"/>
         </view>
-    </t-popup>
+      </view>
+      <scroll-view class="filter-content" scroll-y>
+        <view class="group-header">
+          <text class="group-title">国家地区</text>
+          <view bind:tap="toggleCountryExpand" class="expand-btn">
+            <text>{{isCountryExpanded ? '收起' : '展开'}}</text>
+            <t-icon name="{{isCountryExpanded ? 'chevron-up' : 'chevron-down'}}" size="32rpx"/>
+          </view>
+        </view>
+        <view class="country-collapse-container {{isCountryExpanded ? 'expanded' : ''}}"
+              style="{{countryHeight ? 'height:' + countryHeight + 'px' : ''}}">
+          <t-cell-group>
+            <view class="options-grid col-4" id="country-grid">
+              <view bind:tap="onOptionChange"
+                    class="filter-option {{country === item.value ? 'active' : ''}}" data-key="country"
+                    data-value="{{item.value}}" wx:for="{{COUNTRY_MAPS}}" wx:key="value">
+                {{item.text}}
+              </view>
+            </view>
+          </t-cell-group>
+        </view>
+
+        <t-cell-group title="目标平台">
+          <view class="options-grid col-3">
+            <view bind:tap="onOptionChange" class="filter-option {{entity === item.value ? 'active' : ''}}"
+                  data-key="entity" data-value="{{item.value}}"
+                  wx:for="{{ENTITY_MAPS}}" wx:key="value">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="查询数量">
+          <view class="options-grid col-4">
+            <view bind:tap="onOptionChange" class="filter-option {{limit === item.value ? 'active' : ''}}"
+                  data-key="limit"
+                  data-value="{{item.value}}" wx:for="{{LIMIT_MAPS}}" wx:key="value">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="图像尺寸">
+          <view class="options-grid col-3">
+            <view bind:tap="onOptionChange"
+                  class="filter-option {{resolution === item.value ? 'active' : ''}}" data-key="resolution"
+                  data-value="{{item.value}}" wx:for="{{RESOLUTION_MAPS}}"
+                  wx:key="value">{{item.text}}</view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="裁切方式">
+          <view class="options-grid col-2">
+            <view bind:tap="onOptionChange" class="filter-option {{cut === item.value ? 'active' : ''}} {{entity === 'desktopSoftware' && item.value !== '0' ? 'disabled' : ''}}"
+                  data-disabled="{{entity === 'desktopSoftware' && item.value !== '0'}}"
+                  data-key="cut" data-value="{{item.value}}" wx:for="{{CUT_MAPS}}"
+                  wx:key="value">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+        <t-cell-group title="图像格式">
+          <view class="options-grid col-3">
+            <view bind:tap="onOptionChange" class="filter-option {{format === item.value ? 'active' : ''}}"
+                  data-key="format" data-value="{{item.value}}" wx:for="{{FORMAT_MAPS}}" wx:key="value">
+              {{item.text}}
+            </view>
+          </view>
+        </t-cell-group>
+
+      </scroll-view>
+    </view>
+  </t-popup>
+
+  <t-popup placement="center" visible="{{previewVisible}}">
+    <view class="preview-popup">
+      <view class="preview-header">
+        <view class="preview-title">查看原图</view>
+        <view class="preview-close">
+          <t-button bind:tap="closePreview" size="small" variant="text">关闭</t-button>
+        </view>
+      </view>
+      <scroll-view class="preview-content" scroll-y>
+        <view class="checkerboard">
+          <image class="preview-image" mode="widthFix" src="{{previewImageUrl}}"/>
+        </view>
+      </scroll-view>
+    </view>
+  </t-popup>
 </view>
 
 <t-toast id="t-toast"/>
